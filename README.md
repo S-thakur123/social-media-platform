@@ -4,4 +4,4 @@ create the user-service microservice
 User Service is created 
 Post service is created
 Notification service is created
-API Gateway is created
+API Gateway is created Rebuild
