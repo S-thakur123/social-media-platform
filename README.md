@@ -5,3 +5,4 @@ User Service is created
 Post service is created
 Notification service is created
 API Gateway is created Rebuild
+Conflict between spring-cloud-starter-gateway-server-webmvc and spring-cloud-starter-gateway dependencies
