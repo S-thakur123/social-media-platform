@@ -1,0 +1,18 @@
+server:
+  port: ${EUREKA_PORT:8761}
+
+spring:
+  application:
+    name: service-discovery
+
+eureka:
+  instance:
+    # Use variable for hostname (localhost for IDE, service name for Docker)
+    hostname: ${EUREKA_HOSTNAME:localhost}
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      # Dynamically build the URL using the variables above
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+      

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        .card { font-family: Arial, sans-serif; border: 1px solid #ddd; padding: 20px; border-radius: 10px; max-width: 400px; }
+        .header { color: #007bff; font-size: 20px; font-weight: bold; }
+        .btn { display: inline-block; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="header">SocialTalk Update</div>
+        <p>Hi <span th:text="${recipient}">User</span>,</p>
+        <p><strong><span th:text="${actor}">Someone</span></strong> just <span th:text="${action}">interacted with</span> your post!</p>
+        <a th:href="@{'http://localhost:3000/posts/' + ${postId}}" class="btn">View Post</a>
+    </div>
+</body>
+</html>

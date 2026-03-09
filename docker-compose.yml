@@ -1,0 +1,92 @@
+version: '3.8'
+
+name: social-media-platform-2026
+
+include:
+  - ./user-service/compose.yml
+services:
+  # --- Infrastructure ---
+
+# Infrastructure: Service Discovery (Eureka)
+  eureka-server:
+    build: ./eureka-server
+    ports:
+      - "8761:8761"
+
+  rabbitmq:
+    image: rabbitmq:4.0-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  postgres-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: social_db
+    ports:
+      - "5432:5432"
+
+  # --- Microservices ---
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  user-service:
+    build: ./user-service
+    depends_on:
+      - postgres-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/social_db
+
+  post-service:
+    build: ./post-service
+    env_file:
+      - .env
+    depends_on:
+      - postgres-db
+      - rabbitmq
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/social_db
+      - SPRING_RABBITMQ_HOST=rabbitmq
+
+  chat-service:
+    build: ./chat-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongodb
+      - rabbitmq
+      - eureka-server
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/chat_db
+      SPRING_RABBITMQ_HOST: rabbitmq
+
+  analysis-service:
+    build: ./analysis-service
+    depends_on:
+      - mongodb
+      - rabbitmq
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/analysis_db
+      SPRING_RABBITMQ_HOST: rabbitmq
+
+  notification-service:
+    build: ./notification-service
+    depends_on:
+      - rabbitmq
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    restart: always    
+
+volumes:
+  mongo-data:    

@@ -1,0 +1,67 @@
+spring:
+  application:
+    name: api-gateway
+  
+  data:
+    redis:
+      # Use variable for Redis (Critical for Rate Limiting)
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            # Variable for Frontend URL
+            allowedOrigins: ${FRONTEND_URL:http://localhost:5173}
+            allowedMethods: "*"
+            allowedHeaders: "*"
+      httpclient:
+        connect-timeout: 5000
+        response-timeout: ${GATEWAY_RESPONSE_TIMEOUT:30s}
+        
+      mvc:
+        routes:
+          - id: user-service
+            uri: lb://user-service
+            predicates:
+              - Path=/api/users/**
+
+          - id: post-service
+            uri: lb://post-service
+            predicates:
+              - Path=/api/posts/**
+            filters:
+              - name: CircuitBreaker
+                args:
+                  name: postServiceCB
+                  fallbackUri: forward:/fallback/post-service
+          
+          - id: media-service
+            uri: lb://media-service
+            predicates:
+              - Path=/media/**
+            filters:
+              - name: RequestRateLimiter
+                args:
+                  redis-rate-limiter.replenishRate: ${MEDIA_REPLENISH_RATE:1}
+                  redis-rate-limiter.burstCapacity: ${MEDIA_BURST_CAPACITY:5}
+                  key-resolver: "#{@userKeyResolver}"  
+              - name: RequestSize
+                args:
+                  maxSize: ${MAX_UPLOAD_SIZE:10MB}
+
+          - id: chat-service
+            uri: lb://chat-service
+            predicates:
+              - Path=/ws-chat/**
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      # Variable for Zipkin/Tracing collector
+      endpoint: ${OTLP_ENDPOINT:http://localhost:4318/v1/traces}

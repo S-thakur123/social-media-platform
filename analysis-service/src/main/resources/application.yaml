@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: analysis-service
+  data:
+    mongodb:
+      # Use a variable for the URI, default to localhost if not found
+      uri: ${MONGO_ANALYSIS_URI:mongodb://localhost:27017/analysis_db}
+  cloud:
+    stream:
+      bindings:
+        consumeChatEvents-in-0:
+          # Use a variable for the exchange name
+          destination: ${CHAT_EVENT_DESTINATION:chat-events}
+          group: ${ANALYSIS_GROUP:analysis-group}
+      rabbit:
+        binder:
+          # Use variables for RabbitMQ connection
+          host: ${RABBIT_HOST:localhost}
+          port: ${RABBIT_PORT:5672}
+          username: ${RABBIT_USER:guest}
+          password: ${RABBIT_PASS:guest}
+
+server:
+  # Use a variable for the port
+  port: ${ANALYSIS_SERVICE_PORT:8084}

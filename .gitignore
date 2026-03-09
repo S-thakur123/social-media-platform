@@ -1,0 +1,7 @@
+# Secrets and Credentials
+.env
+.env.local
+.env.stack
+
+# Ignore .env files in subfolders (like user-service/.env)
+**/.env
