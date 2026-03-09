@@ -1,0 +1,11 @@
+# social-media-platform
+Build a distributed social media platform with microservices architecture including user service, post service, notification service, chat service, and media service using Spring Cloud, React, Docker, and message queues
+create the user-service microservice
+User Service is created 
+Post service is created
+Notification service is created
+API Gateway is created Rebuild
+Conflict between spring-cloud-starter-gateway-server-webmvc and spring-cloud-starter-gateway dependencies
+Conflict Resolve
+Nothing to upload 
+Work on CLI
