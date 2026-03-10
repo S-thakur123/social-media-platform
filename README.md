@@ -4,8 +4,4 @@ create the user-service microservice
 User Service is created 
 Post service is created
 Notification service is created
-API Gateway is created Rebuild
-Conflict between spring-cloud-starter-gateway-server-webmvc and spring-cloud-starter-gateway dependencies
-Conflict Resolve
-Nothing to upload 
-Work on CLI
+API Gateway is created 
